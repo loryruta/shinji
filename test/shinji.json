@@ -1,0 +1,11 @@
+{
+    "generated_file": "src/generated/shinji.hpp",
+    "bundle": {
+        "shaders": [
+            "shaders/test.vert",
+            "shaders/test.frag",
+            {"type": "glslc", "name": "shaders/test.vert.spv", "input": "shaders/test.vert", "glslc_options": "--target-env=opengl"},
+            {"type": "glslc", "name": "shaders/test.frag.spv", "input": "shaders/test.frag", "glslc_options": "--target-env=opengl"}
+        ]
+    }
+}
