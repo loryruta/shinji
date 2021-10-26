@@ -54,9 +54,9 @@ def load_config(cfg_path):
     with open(cfg_path, 'rt') as cfg_f:
         cfg = json.loads(cfg_f.read())
 
-        with open(fix_path(cfg['generated_file']), 'wt') as bundle_f:
-            if "bundle" in cfg:
-                bundle_f.writelines('\n'.join([
+        with open(fix_path(cfg['generated_file']), 'wt') as gen_f:
+            if "embed" in cfg:
+                gen_f.writelines('\n'.join([
                     '#pragma once',
                     '',
                     '#include <string>',
@@ -66,15 +66,15 @@ def load_config(cfg_path):
                     '{', ''
                 ]))
 
-                for shader in cfg['bundle']['shaders']:
+                for shader in cfg['embed']['shaders']:
                     if type(shader) == str:
-                        bundle_f.write('\n'.join([
+                        gen_f.write('\n'.join([
                             create_c_var_from_plain_shader(shader),
                             ''
                         ]))
                     else:
                         if shader['type'] == 'glslc':
-                            bundle_f.write('\n'.join([
+                            gen_f.write('\n'.join([
                                 create_c_var_from_spirv_shader(
                                     shader['name'],
                                     shader['input'],
@@ -85,35 +85,35 @@ def load_config(cfg_path):
                         else:
                             print("Unsupported shader bundling type: %s" % shader['type'])
 
-                bundle_f.writelines('\n'.join([
+                gen_f.writelines('\n'.join([
                     "inline std::unordered_map<std::string, std::pair<char const*, size_t>> const s_src_by_shader{", '',
                 ]))
 
-                for shader in cfg['bundle']['shaders']:
+                for shader in cfg['embed']['shaders']:
                     shader = shader if type(shader) == str else shader['name']
                     shader_var_name = get_shader_var_name(shader)
-                    bundle_f.writelines('\n'.join([
+                    gen_f.writelines('\n'.join([
                         '{ "%s", { %s, sizeof(%s) / sizeof(char) }},' % (shader, shader_var_name, shader_var_name),
                         ''
                     ]))
 
-                bundle_f.writelines('\n'.join([
+                gen_f.writelines('\n'.join([
                     '};', '',
                 ]))
 
-                bundle_f.writelines('\n'.join([
+                gen_f.writelines('\n'.join([
                     'inline std::pair<char const*, size_t> load_shader(char const* shader)',
                     '{',
                     '    return shinji::bundle::s_src_by_shader.at(shader);',
                     '}', ''
                 ]))
 
-                bundle_f.writelines('\n'.join([
+                gen_f.writelines('\n'.join([
                     '}', ''
                 ]))
 
                 with open(os.path.join(os.environ['SHINJI_HOME'], 'src', 'shinji_loader.inl'), 'rt') as loader_f:
-                    bundle_f.write(loader_f.read())
+                    gen_f.write(loader_f.read())
 
 
 if __name__ == "__main__":

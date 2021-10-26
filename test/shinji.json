@@ -1,6 +1,6 @@
 {
     "generated_file": "src/generated/shinji.hpp",
-    "bundle": {
+    "embed": {
         "shaders": [
             "shaders/test.vert",
             "shaders/test.frag",
