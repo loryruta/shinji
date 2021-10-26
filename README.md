@@ -27,27 +27,26 @@ You have to describe how SHINJI will treat your shaders through a configuration 
 
 ```javascript
 {
-    "generated_file": "src/generated/shinji.hpp",      // Specify where the shinji auto-generated file has to be put.
+    "generated_file": "src/generated/shinji.hpp",
     "embed": {
-         "shaders": [                                  // The list of shaders that needs to be embedded in the binary.
-            // shaders/test_txt.vert (plain)
-            "shaders/test_txt.vert",                   // A textual shader (with no processing)
-            
-            // shaders/test_spv.vert.spv (spir-v)
+         "shaders": [
+            "shaders/test_txt.vert",
             {                                          
-                "type": "glslc",                       // Shader generated using glslc
-                "name": "shaders/test_spv.vert.spv",   // A virutal shader name used in order to refer to the shader in code
-                "input": "shaders/test_spv.vert",      // The input shader
-                "glslc_options": "--target-env=opengl" // Additional args passed to glslc
-            },
-            
-            // ...
+                "type": "glslc",
+                "name": "shaders/test_spv.vert.spv",
+                "input": "shaders/test_spv.vert",
+                "glslc_options": "--target-env=opengl"
+            }
         ]
     }
 }
 ```
+The code above describes two shaders: `shaders/test_txt.vert` (textual) and `shaders/test_spv.vert.spv` (compiled from `shaders/test_spv.vert`) that needs to be embedded in the application.
+
+**The field `generated_file` is required** and specify an auto-generated file holding, in this case, the shaders and shader loading functions.
+
 - **NOTE: `shinji.json` must always lay in the project root folder (where `CMakeLists.txt` is).**
-- NOTE: relative paths are treated relative to the `CMakeLists.txt`.
+- NOTE: relative paths are treated relative to `CMakeLists.txt`.
 
 In order to load SHINJI from `CMakeLists.txt`:
 ```cmake
