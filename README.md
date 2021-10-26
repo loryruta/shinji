@@ -13,7 +13,7 @@ As mentioned SHINJI divides the shader processing in 3 parts:
 * **Compilation**: offers you the possibility to compile GLSL shaders to SPIR-V using the Vulkan SDK tool `glslc`.
 * **Deployment**: I'm aware "deployment" isn't a very used word in this area: for "deployment" I mean the process of making the shaders available to the built application. In a common scenario this translates to copying the shaders from the source to the build folder. Other than this, **SHINJI can embed shaders in the application binary (really useful for libraries!)**.
 
-### Requirements
+## Requirements
 
 The following are the minimum requirements needed to run SHINJI:
 * CMake 3.19
