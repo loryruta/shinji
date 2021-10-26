@@ -2,7 +2,7 @@
 
 # SHader INJ(I)ector
 
-SHINJI is a CMake addon that helps you control GLSL shaders validation, compilation and deployment.
+SHINJI is a CMake addon that helps you managing GLSL shaders validation, compilation and deployment.
 
 ### Overview
 
