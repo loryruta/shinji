@@ -3,7 +3,7 @@ project(shader_injector)
 
 set(CMAKE_CXX_STANDARD 17)
 
-option(BUILD_TESTS "Build tests?" OFF)
+option(SHINJI_BUILD_TESTS "Build tests?" OFF)
 
 # VCPKG
 include(FetchContent)
@@ -12,6 +12,6 @@ FetchContent_Declare(vcpkg URL "https://github.com/microsoft/vcpkg/archive/refs/
 FetchContent_MakeAvailable(vcpkg)
 include("${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake")
 
-if (BUILD_TESTS)
+if (SHINJI_BUILD_TESTS)
     add_subdirectory(test)
 endif()
