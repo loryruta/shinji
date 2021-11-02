@@ -2,7 +2,7 @@
 
 # SHader INJ(I)ector
 
-SHINJI (originally SHader INJector) is a CMake addon that aims to avoid CMake boilerplate code for resource management and exposes simple and easy to use functions.
+SHINJI (originally SHader INJector) is a CMake addon that avoids you CMake boilerplate code for resource management and exposes simple and easy to use functions.
 
 It hides the verbosity of CMake behind a set of useful functions that handle output files creation and dependency management for validation, compilation and integration within the application.
 
