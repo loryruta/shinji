@@ -1,8 +1,30 @@
 include(${CMAKE_SOURCE_DIR}/shinji.cmake)
 
-add_executable(shinji_test src/main.cpp)
+# ------------------------------------------------------------------------------------------------
+# Executable definition
+# ------------------------------------------------------------------------------------------------
 
-shinji_load(shinji_test)
+add_executable(shinji_test
+        src/main.cpp
+        )
+
+shinji_validate_glsl(shinji_test shaders/test.vert OPTIONS "")
+shinji_validate_glsl(shinji_test shaders/test.frag OPTIONS "")
+
+shinji_embed(shinji_test
+        shaders/test.vert
+        shaders/test.frag
+        )
+
+shinji_compile_glsl_to_spirv(shinji_test shaders/test.vert ${CMAKE_CURRENT_SOURCE_DIR}/.spv/test.vert.spv OPTIONS "--target-env=opengl")
+shinji_compile_glsl_to_spirv(shinji_test shaders/test.frag ${CMAKE_CURRENT_SOURCE_DIR}/.spv/test.frag.spv OPTIONS "--target-env=opengl")
+
+shinji_embed(shinji_test
+        .spv/test.vert.spv
+        .spv/test.frag.spv
+        )
+
+shinji_finalize(shinji_test)
 
 # ------------------------------------------------------------------------------------------------
 # Dependencies
