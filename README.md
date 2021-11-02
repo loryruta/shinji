@@ -2,77 +2,70 @@
 
 # SHader INJ(I)ector
 
-SHINJI is a CMake addon that helps you managing GLSL shaders validation, compilation and deployment.
+SHINJI (originally SHader INJector) is a CMake addon that aims to avoid CMake boilerplate code for resource management and exposes simple and easy to use functions.
 
-### Overview
+It can:
+- Validate GLSL code (using glslangValidator)
+- Compile GLSL code to SPIR-V (using glslc)
+- Embed resources in the application binary (internally using [CMRC](https://github.com/vector-of-bool/cmrc)'s code)
 
-_Because of its architecture, **SHINJI only acts in project configuration time**._
-
-As mentioned SHINJI divides the shader processing in 3 parts:
-* **Validation**: validates GLSL shaders using the Vulkan SDK tool `glslanValidator`.
-* **Compilation**: offers you the possibility to compile GLSL shaders to SPIR-V using the Vulkan SDK tool `glslc`.
-* **Deployment**: I'm aware "deployment" isn't a very used word in this area: for "deployment" I mean the process of making the shaders available to the built application. In a common scenario this translates to copying the shaders from the source to the build folder. Other than this, **SHINJI can embed shaders in the application binary (really useful for libraries!)**.
-
-## Requirements
-
-The following are the minimum requirements needed to run SHINJI:
+## Requirements:
 * CMake 3.19
-* C++17 
-* Python3
-* Vulkan SDK
+* C++17
+* [Vulkan SDK](https://vulkan.lunarg.com) (required only if using shader-related functions)
 
 ## Usage
 
-You have to describe how SHINJI will treat your shaders through a configuration file: `shinji.json`.
+Using SHINJI is pretty straight-forward as you can dynamically download and depend on it in configuration time:
 
-```javascript
-{
-    "generated_file": "src/generated/shinji.hpp",
-    "embed": {
-         "shaders": [
-            "shaders/test_txt.vert",
-            {                                          
-                "type": "glslc",
-                "name": "shaders/test_spv.vert.spv",
-                "input": "shaders/test_spv.vert",
-                "glslc_options": "--target-env=opengl"
-            }
-        ]
-    }
-}
-```
-The code above describes two shaders: `shaders/test_txt.vert` (textual) and `shaders/test_spv.vert.spv` (compiled from `shaders/test_spv.vert`) that needs to be embedded in the application.
-
-**The field `generated_file` is required** and specify an auto-generated file holding, in this case, the shaders and shader loading functions.
-
-- **NOTE: `shinji.json` must always lay in the project root folder (where `CMakeLists.txt` is).**
-- NOTE: relative paths are treated relative to `CMakeLists.txt`.
-
-In order to load SHINJI from `CMakeLists.txt`:
 ```cmake
-# todo download shinji package
-include(${CMAKE_SOURCE_DIR}/shinji.cmake)
-
-add_executable(test_app ...)  
-  
-shinji_load(test_app)
+include(FetchContent)
+message(STATUS "Fetching shinji...")
+FetchContent_Declare(
+    shinji
+    GIT_REPOSITORY "https://github.com/loryruta/shinji"
+)
+FetchContent_MakeAvailable(shinji)
+include("${shinji_SOURCE_DIR}/shinji.cmake")
 ```
 
-To retrieve the shader source in code you can use the following functions:
+You may now want to use the following functions:
+
+```cmake
+shinji_validate_glsl(<TARGET> <SHADER> OPTIONS <GLSLANG_VALIDATOR_OPTIONS>)
+# shinji_validate_glsl(shinji_test "shaders/my_shader.vert")
+
+shinji_compile_glsl_to_spirv(<TARGET> <GLSL_SHADER> <SPIRV_SHADER> OPTIONS <GLSLC_OPTIONS>)
+# shinji_compile_glsl_to_spirv(shinji_test "shaders/my_shader.vert" ".spv/my_shader.vert.spv")
+
+shinji_embed(<TARGET> <FILE1> [<FILE2> ...])
+# shinji_embed(shinji_test "shaders/my_shader.vert" "shaders/my_shader.frag")
+
+# IMPORTANT:
+# THIS LINE MUST BE PRESENT AFTER *ALL* shinji_* CALLS!
+shinji_finalize(<TARGET>)
+# shinji_finalize(<TARGET>)
+```
+
+GLSL shader validation and compilation, and resource integration will take place in build time.
+
+In order to access the resources (embedded or not):
 ```c++
-#include "src/generated/shinji.hpp" // Or whatever you've wrote in `shinji.json`.
+#include <shinji.hpp>
 
+void something()
 {
-    auto [src, src_len] = shinji::load_shader_from_bundle("shaders/test_txt.vert");
-    // Use OpenGL/Vulkan or whatever to load the shader...
+    // Bundled resource:
+    auto [buf, buf_len] = shinji::load_resource_from_bundle("shaders/my_shader.vert");
+    // (...)
+    
+    // Physical file resource:
+    std::vector<char> buf;
+    shinji::load_resource_from_file("shaders/my_shader.vert", buf);
+    // (...)
 }
 
-{
-    auto [src, src_len] = shinji::load_shader_from_bundle("shaders/test_spv.vert.spv");
-    // ...
-}
 ```
-
 
 
 
