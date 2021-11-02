@@ -60,17 +60,24 @@ set(SHINJI_CMAKE ${SHINJI_HOME}/shinji.cmake)
 find_program(Vulkan_GLSLC_EXECUTABLE NAMES glslc)  # Because it's CMake 3.19 (otherwise find_package(Vulkan))
 find_program(Vulkan_GLSLANG_VALIDATOR_EXECUTABLE NAMES glslangValidator)
 
-if (Vulkan_GLSLC_EXECUTABLE-NOTFOUND)
-    message(FATAL_ERROR "Couldn't find glslc")
-endif()
-
-if (Vulkan_GLSLANG_VALIDATOR_EXECUTABLE-NOTFOUND)
-    message(FATAL_ERROR "Couldn't find glslangValidator")
-endif()
-
 # ------------------------------------------------------------------------------------------------
 # Functions
 # ------------------------------------------------------------------------------------------------
+
+
+function (_shinji_assert_glslc)
+    if (Vulkan_GLSLC_EXECUTABLE-NOTFOUND)
+        message(FATAL_ERROR "Couldn't find glslc")
+    endif()
+endfunction()
+
+
+function (_shinji_assert_glslangValidator)
+    if (Vulkan_GLSLANG_VALIDATOR_EXECUTABLE-NOTFOUND)
+        message(FATAL_ERROR "Couldn't find glslangValidator")
+    endif()
+endfunction()
+
 
 function (_shinji_symbol_name SYMBOL_NAME_VAR INPUT_STRING)
     string(MD5 SYMBOL_NAME ${INPUT_STRING})
@@ -131,6 +138,8 @@ endfunction()
 function (shinji_validate_glsl TARGET SHADER)
     cmake_parse_arguments(ARG "" "OPTIONS" "" "${ARGN}")
 
+    _shinji_assert_glslangValidator()
+
     _shinji_try_init(${TARGET} SHINJI_LIB)
 
     _shinji_fix_src_path(${SHADER} SHADER_PATH CHECK)
@@ -161,6 +170,8 @@ endfunction()
 
 function (shinji_compile_glsl_to_spirv TARGET GLSL_SHADER SPIRV_SHADER)
     cmake_parse_arguments(ARG "" "OPTIONS" "" "${ARGN}")
+
+    _shinji_assert_glslc()
 
     _shinji_try_init(${TARGET} SHINJI_LIB)
 
