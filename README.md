@@ -2,9 +2,11 @@
 
 # SHader INJ(I)ector
 
-SHINJI (originally SHader INJector) is a CMake addon that aims to avoid CMake boilerplate code for resource management and exposes simple and easy to use functions.
+SHINJI (originally SHader INJector) is a CMake addon that avoids you writing boilerplate code for resource management and exposes simple and easy to use functions.
 
-It can:
+It's mainly designed for OpenGL or Vulkan applications as most of its functions work with GLSL shaders. Its objective is to hide the verbosity of CMake behind a set of useful functions that handle output files creation and dependency management for validation, compilation and integration within the application.
+
+Briefly it can:
 - Validate GLSL code (using glslangValidator)
 - Compile GLSL code to SPIR-V (using glslc)
 - Embed resources in the application binary (internally using [CMRC](https://github.com/vector-of-bool/cmrc)'s code)
