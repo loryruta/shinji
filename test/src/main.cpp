@@ -137,7 +137,7 @@ int main()
 
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
-	GLFWwindow* window = glfwCreateWindow(512, 512, "shader-injector", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(512, 512, "shinji", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
