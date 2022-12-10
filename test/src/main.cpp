@@ -74,14 +74,14 @@ GLuint create_test_program()
 	GLuint v_shader, f_shader;
 
 	{ // shaders/test.vert
-		auto [src, src_len] = shinji::load_resource_from_bundle("shaders/test.vert");
+		auto [src, src_len] = shinji_test::shinji::load_resource_from_bundle("shaders/test.vert");
 		v_shader = create_shader(GL_VERTEX_SHADER, src, src_len);
 
 		glAttachShader(program, v_shader);
 	}
 
 	{ // shaders/test.frag
-		auto [src, src_len] = shinji::load_resource_from_bundle("shaders/test.frag");
+		auto [src, src_len] = shinji_test::shinji::load_resource_from_bundle("shaders/test.frag");
 		f_shader = create_shader(GL_FRAGMENT_SHADER, src, src_len);
 
 		glAttachShader(program, f_shader);
@@ -103,14 +103,14 @@ GLuint create_test_spirv_program()
 	GLuint v_shader, f_shader;
 
 	{ // shaders/test.vert.spirv
-		auto [src, src_len] = shinji::load_resource_from_bundle(".spv/test.vert.spv");
+		auto [src, src_len] = shinji_test::shinji::load_resource_from_bundle(".spv/test.vert.spv");
 		v_shader = create_spirv_shader(GL_VERTEX_SHADER, src, src_len);
 
 		glAttachShader(program, v_shader);
 	}
 
 	{ // shaders/test.frag.spirv
-		auto [src, src_len] = shinji::load_resource_from_bundle(".spv/test.frag.spv");
+		auto [src, src_len] = shinji_test::shinji::load_resource_from_bundle(".spv/test.frag.spv");
 		f_shader = create_spirv_shader(GL_FRAGMENT_SHADER, src, src_len);
 
 		glAttachShader(program, v_shader);
@@ -129,7 +129,7 @@ int main()
 {
 	if (!glfwInit())
 	{
-		fprintf(stderr, "Couldn't initialize GLFW.");
+		fprintf(stderr, "Couldn't initialize GLFW\n");
 		fflush(stderr);
 
 		return 1;
@@ -142,7 +142,7 @@ int main()
 
 	if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
 	{
-		fprintf(stderr, "Couldn't initialize GLAD.\n");
+		fprintf(stderr, "Couldn't initialize GLAD\n");
 		fflush(stderr);
 
 		return 2;
