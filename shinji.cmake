@@ -161,7 +161,7 @@ function (shinji_validate_glsl TARGET SHADER)
 
     target_sources(${SHINJI_LIB} PRIVATE ${VALIDATION_RULE})
 
-    _shinji_log(${TARGET} STATUS "Validate GLSL: ${SHADER}")
+    _shinji_log(${TARGET} STATUS "Validating GLSL: ${SHADER}")
 endfunction()
 
 
@@ -188,7 +188,7 @@ function (shinji_compile_glsl_to_spirv TARGET GLSL_SHADER SPIRV_SHADER)
 
     target_sources(${TARGET} INTERFACE ${SPIRV_SHADER})
 
-    _shinji_log(${TARGET} STATUS "Compile GLSL to SPIR-V: ${GLSL_SHADER_PATH} -> ${SPIRV_SHADER_PATH}")
+    _shinji_log(${TARGET} STATUS "Compiling GLSL to SPIR-V: ${GLSL_SHADER_PATH} -> ${SPIRV_SHADER_PATH}")
 endfunction()
 
 
@@ -216,7 +216,7 @@ function (shinji_embed TARGET NAMESPACE)
                     -P ${SHINJI_CMAKE}
                 MAIN_DEPENDENCY ${FILE}
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                COMMENT "[shinji] Embedding file: ${FILE}"
+                COMMENT "[shinji] Embedding file ${FILE} into ${EMBEDDED_CPP_FILE}"
         )
 
         target_sources(${SHINJI_LIB} PUBLIC ${EMBEDDED_CPP_FILE})
@@ -233,7 +233,7 @@ function (shinji_embed TARGET NAMESPACE)
             "{\"${FILE}\", {${NAMESPACE}::shinji::${SYMBOL_NAME}, ${NAMESPACE}::shinji::${SYMBOL_NAME}_size}},\n"
         )
 
-        _shinji_log(${TARGET} STATUS "Embed file: ${FILE}")
+        _shinji_log(${TARGET} STATUS "Embedding file ${FILE} into ${EMBEDDED_CPP_FILE}")
     endforeach()
 endfunction()
 
@@ -313,6 +313,6 @@ namespace @NAMESPACE@::shinji
 
     target_sources(${SHINJI_LIB} PUBLIC ${SHINJI_HPP})
 
-    target_include_directories(${TARGET} PUBLIC ${SHINJI_BIN_DIR})
-    target_link_libraries(${TARGET} PUBLIC ${SHINJI_LIB})
+    target_include_directories(${TARGET} PRIVATE ${SHINJI_BIN_DIR})
+    target_link_libraries(${TARGET} PRIVATE ${SHINJI_LIB})
 endfunction()
